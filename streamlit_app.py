@@ -1,40 +1,30 @@
-import altair as alt
-import numpy as np
-import pandas as pd
 import streamlit as st
+import pandas as pd
+import numpy as np
 
-"""
-# Welcome to Streamlit!
+st.write(f"Streamlit version = {st.__version__}")
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:.
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+df1 = pd.DataFrame(
+    np.random.randn(10, 2) / [50, 50] + [37.76, -122.4],
+    columns=['lat', 'lon'])
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+df2 = pd.DataFrame(
+    np.random.randn(10, 2) / [50, 50] + [-37.76, 122.4],
+    columns=['lat', 'lon'])
 
-num_points = st.slider("Number of points in spiral", 1, 10000, 1100)
-num_turns = st.slider("Number of turns in spiral", 1, 300, 31)
+option = st.selectbox(
+    'which dataframe to use?',
+    ('1', '2'))
 
-indices = np.linspace(0, 1, num_points)
-theta = 2 * np.pi * num_turns * indices
-radius = indices
+st.write('You selected:', option)
 
-x = radius * np.cos(theta)
-y = radius * np.sin(theta)
+df = df1 if option == '1' else df2
 
-df = pd.DataFrame({
-    "x": x,
-    "y": y,
-    "idx": indices,
-    "rand": np.random.randn(num_points),
-})
+st.map(df)
+st.write(df)
 
-st.altair_chart(alt.Chart(df, height=700, width=700)
-    .mark_point(filled=True)
-    .encode(
-        x=alt.X("x", axis=None),
-        y=alt.Y("y", axis=None),
-        color=alt.Color("idx", legend=None, scale=alt.Scale()),
-        size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
-    ))
+st.write("df1")
+st.map(df1)
+
+st.write("2")
+st.map(df2)
